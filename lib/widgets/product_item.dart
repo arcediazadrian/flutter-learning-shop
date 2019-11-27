@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
@@ -38,11 +39,22 @@ class ProductItem extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           trailing: IconButton(
-            icon: Icon(Icons.shopping_cart),
-            color: Theme.of(context).accentColor,
-            onPressed: () =>
-                cart.addItem(product.id, product.price, product.title),
-          ),
+              icon: Icon(Icons.shopping_cart),
+              color: Theme.of(context).accentColor,
+              onPressed: () {
+                cart.addItem(product.id, product.price, product.title);
+                Scaffold.of(context).hideCurrentSnackBar();
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                    'Added Item to cart',
+                  ),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () => cart.removeSingleItem(product.id),
+                  ),
+                  duration: Duration(seconds: 2),
+                ));
+              }),
         ),
       ),
     );
