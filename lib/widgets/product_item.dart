@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:provider/provider.dart';
 
+import '../providers/auth.dart';
 import '../providers/cart.dart';
 import '../screens/product_detail_screen.dart';
 import '../providers/product.dart';
@@ -11,15 +11,20 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         child: GestureDetector(
           onTap: () => Navigator.of(context)
               .pushNamed(ProductDetailScreen.routeName, arguments: product.id),
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: AssetImage('assets/images/product-placeholder.png'),
+              image: NetworkImage(product.imageUrl),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         footer: GridTileBar(
@@ -29,7 +34,8 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               color: Theme.of(context).accentColor,
-              onPressed: () => product.toggleFavoriteStatus(),
+              onPressed: () =>
+                  product.toggleFavoriteStatus(authData.token, authData.userId),
               //label: child,
             ),
             //child: Text('Never changes'),

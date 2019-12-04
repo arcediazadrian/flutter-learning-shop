@@ -19,62 +19,66 @@ class _OrderItemState extends State<OrderItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text('\$${widget.order.amount}'),
-            subtitle: Text(
-              DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime),
-            ),
-            trailing: IconButton(
-              icon: Icon(_isExpanded ? Icons.expand_less : Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  _isExpanded = !_isExpanded;
-                });
-              },
-            ),
-          ),
-          if (_isExpanded)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-              child: Column(
-                children: <Widget>[
-                  Divider(),
-                  Container(
-                    padding:
-                        EdgeInsets.only(top: 0, bottom: 10, left: 4, right: 4),
-                    height:
-                        min(widget.order.products.length * 20.0 + 30.0, 100),
-                    child: ListView(
-                      children: widget.order.products
-                          .map(
-                            (product) => Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  product.title,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  '${product.quantity}x \$${product.price}',
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ],
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      height: _isExpanded
+          ? min(widget.order.products.length * 20.0 + 120.0, 200)
+          : 100,
+      child: Card(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Text('\$${widget.order.amount}'),
+              subtitle: Text(
+                DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime),
               ),
-            )
-        ],
+              trailing: IconButton(
+                icon: Icon(_isExpanded ? Icons.expand_less : Icons.expand_more),
+                onPressed: () {
+                  setState(() {
+                    _isExpanded = !_isExpanded;
+                  });
+                },
+              ),
+            ),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              height: _isExpanded
+                  ? (widget.order.products.length * 20.0 + 20.0)
+                  : 0,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                child: Container(
+                  padding:
+                      EdgeInsets.only(top: 0, bottom: 10, left: 4, right: 4),
+                  height: min(widget.order.products.length * 20.0 + 20.0, 100),
+                  child: ListView(
+                    children: widget.order.products
+                        .map(
+                          (product) => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                product.title,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '${product.quantity}x \$${product.price}',
+                                style:
+                                    TextStyle(fontSize: 18, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
